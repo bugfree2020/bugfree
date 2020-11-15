@@ -1,0 +1,174 @@
+#!/usr/bin/env bash
+
+##############################################################################
+##
+##  UN*X 上的 flutterw wrapper 脚本
+##  Author: duan
+##  Version: v2.0.0
+##  Date: 2020-06-15
+##
+##  使用该脚本可以保证开发人员在该项目下使用统一的 flutter 版本
+##  使用该脚本会在 $flutter_base_dir 目录下下载多份不同版本的sdk，该目录请不要手动改动，请知晓
+##
+##  【 删除命令 ./flutterw channel 】, 要切换版本，请到 flutterw.properties 修改
+##  【 删除命令 ./flutterw upgrade 】, 要升级版本，请到 flutterw.properties 修改
+##
+##  【 扩展命令 ./flutterw xrefresh 】, 刷新 flutterw.properties 里面配置的 sdk，使用场景：sdk下载失败重新下载
+##  【 扩展命令 ./flutterw xhelp 】, 获取帮助 flutter wrapper 相关帮助
+##
+##  【 兼容 flutter 其余命令 】
+##
+##############################################################################
+
+set -e
+
+# $1: sdk的配置文件
+# $2: 是否强制刷新(删除重新下载)
+# return: 当前sdk的地址
+function init_flutter_sdk() {
+
+  # 参数
+  prop_file=$1
+  force_refresh=$2
+
+  # 使用国内镜像
+  export PUB_HOSTED_URL=https://pub.flutter-io.cn
+  export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
+
+  # 默认参数
+  DEFAULT_FLUTTER_VERSION='1.17.3'
+  DEFAULT_FLUTTER_BASE_DIR="~/.flutter_sdks"
+  DEFAULT_FLUTTER_URL='https://github.com/flutter/flutter.git'
+
+  ## 读取参数
+  flutter_base_dir=$(grep -E "^flutter\.baseDir=" "${prop_file}" | cut -d'=' -f2)
+  flutter_version=$(grep -E "^flutter\.version=" "${prop_file}" | cut -d'=' -f2)
+  flutter_url=$(grep -E "^flutter\.url=" "${prop_file}" | cut -d'=' -f2)
+
+  if [ -z "$flutter_base_dir" ]; then
+    flutter_base_dir=$DEFAULT_FLUTTER_DIRNAME
+  fi
+
+  if [ -z "$flutter_version" ]; then
+    flutter_version=$DEFAULT_FLUTTER_VERSION
+  fi
+
+  if [ -z "$flutter_url" ]; then
+    flutter_url=$DEFAULT_FLUTTER_URL
+  fi
+
+  flutter_sdk_dir="${flutter_base_dir}/${flutter_version}"
+  userHomeDir=$(echo ~)
+  flutter_sdk_dir=$(echo $flutter_sdk_dir | sed "s#~#${userHomeDir}#g")
+
+  # fresh 操作开始, 删除 flutterw.properties 里面配置的 sdk，重新下载
+  if [[ "$force_refresh" == "1" ]]; then
+    if [ -d "$flutter_sdk_dir" ]; then
+      rm -rf $flutter_sdk_dir
+    fi
+  fi
+
+  # 检查目标版本是否存在，不存在就下载
+  if [ ! -d "$flutter_sdk_dir" ]; then
+    mkdir -p $flutter_sdk_dir
+
+    git clone $flutter_url $flutter_sdk_dir
+
+    # git -C $flutter_sdk_dir checkout ${flutter_version}
+    SAVED="$(pwd)"
+    cd $flutter_sdk_dir
+    git checkout ${flutter_version} ${flutter_version}
+    ./bin/flutter doctor
+    cd "$SAVED" >/dev/null
+  fi
+
+  echo $flutter_sdk_dir
+}
+
+
+# 获取脚本文件地址: $0 可能是一个软链接
+PRG="$0"
+# Need this for relative symlinks.
+while [ -h "$PRG" ]; do
+  ls=$(ls -ld "$PRG")
+  link=$(expr "$ls" : '.*-> \(.*\)$')
+  if expr "$link" : '/.*' >/dev/null; then
+    PRG="$link"
+  else
+    PRG=$(dirname "$PRG")"/$link"
+  fi
+done
+SAVED="$(pwd)"
+cd "$(dirname "$PRG")/" >/dev/null
+APP_HOME="$(pwd -P)"
+cd "$SAVED" >/dev/null
+
+## 检查配置文件是否存在
+prop_file="${APP_HOME}/flutterw.properties"
+if [ ! -f "${prop_file}" ]; then
+  echo "配置文件 ${prop_file} 不存在"
+  exit 1
+fi
+
+
+###################################################################
+# ./flutterw --wrapper-help 扩展的指令，获取帮助
+###################################################################
+if [[ "$#" == "1" ]] && [[ "$1" == "xhelp" ]]; then
+  echo -e "\n"
+  echo -e "##############################################################################\n"
+  echo -e "这是 UN*X 上的 flutterw wrapper 脚本\n"
+  echo -e "使用该脚本可以保证开发人员在该项目下使用统一的 flutter 版本\n"
+  echo -e "使用该脚本会在 \$flutter_base_dir 目录下下载多份不同版本的sdk，该目录请不要手动改动，请知晓\n"
+
+  echo -e "【 删除命令 ./flutterw channel 】，要切换版本，请到 flutterw.properties 修改 \n"
+  echo -e "【 删除命令 ./flutterw upgrade 】，要升级版本，请到 flutterw.properties 修改 \n"
+  echo -e "【 扩展命令 ./flutterw refresh 】,刷新 flutterw.properties 里面配置的 sdk，使用场景：sdk下载失败重新下载 \n"
+  echo -e "【 扩展命令 ./flutterw xhelp 】,获取帮助 flutter wrapper 相关帮助 \n"
+  echo -e "【 兼容 flutter 其余命令 】 \n"
+  echo -e "##############################################################################\n"
+  echo -e "\n"
+  exit 0
+fi
+
+###################################################################
+# xfresh 操作开始, 删除 flutterw.properties 里面配置的 sdk，重新下载
+###################################################################
+force_refresh=0
+if [[ "$#" == "1" ]] && [[ "$1" == "xrefresh" ]]; then
+  force_refresh=1
+fi
+
+# 调用 sdk 初始化 流程
+flutter_sdk_dir=$(init_flutter_sdk $prop_file $force_refresh)
+
+# xfresh 操作结束
+if [[ "$force_refresh" == "1" ]]; then
+  exit 0
+fi
+
+###################################################################
+# 不能使用 ./flutterw channel 切换channel
+###################################################################
+if echo "$@" | grep -q "channel"; then
+  echo -e "不能使用 ./flutterw channel 切换渠道,要切换版本请到 flutterw.properties 修改\n"
+  exit 1
+fi
+
+###################################################################
+# 不能使用 ./flutterw upgrade 升级 sdk
+###################################################################
+if [[ "$#" == "1" ]] && [[ "$1" == "upgrade" ]]; then
+  echo -e "不能使用 ./flutterw upgrade 升级 sdk ,要切换版本请到 flutterw.properties 修改\n"
+  exit 1
+fi
+
+
+###################################################################
+# 【最终执行】flutter wrapper 配置完成，将全量参数传递给真正的 flutter 执行
+###################################################################
+"$flutter_sdk_dir/bin/flutter" "$@"
+
+# Post flutterw tasks. exit code from /bin/flutterw will be used as final exit
+FLUTTER_EXIT_STATUS=$?
+exit ${FLUTTER_EXIT_STATUS}
