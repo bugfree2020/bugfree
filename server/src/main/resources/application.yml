@@ -1,3 +1,8 @@
 server:
   port: 8080
 
+spring:
+  r2dbc:
+    url: r2dbcs:mysql://localhost:3306/bugfree?sslMode=DISABLED
+    username: test
+    password: 123456
