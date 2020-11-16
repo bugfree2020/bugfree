@@ -12,27 +12,27 @@ class Root {
     }
 
     @GetMapping("/history")
-    suspend fun history(): List<HistoryResponse> {
+    suspend fun history(ver: String?, buildType: String?, category: Int?, page: Int?): List<HistoryResponseItem> {
         return listOf(
-                HistoryResponse(
+                HistoryResponseItem(
                         "dev/1.60",
                         "1.60.0.001",
                         "preview",
-                        HistoryResponse.CATEGORY_LIVE,
+                        HistoryResponseItem.CATEGORY_LIVE,
                         """
                             礼物交互优化问题修复
                         """,
                         "http://bugfree.ixiaochuan.cn/job/zuiyou_oversea/412/artifact/build/1.59.0.206.apk",
                         "https://apk.izuiyou.com/cocofun/android/1.59.0.206.apk",
-                        HistoryResponse.STATUS_OK,
+                        HistoryResponseItem.STATUS_OK,
                         "Hetao",
                         1605533664,
                 ),
-                HistoryResponse(
+                HistoryResponseItem(
                         "feature/adjust_v2",
                         "1.59.0.111",
                         "preview",
-                        HistoryResponse.CATEGORY_MAIN,
+                        HistoryResponseItem.CATEGORY_MAIN,
                         """
                             fix 微调 (details)
                             add 发帖加上来源 (details)
@@ -46,15 +46,15 @@ class Root {
                         """,
                         "http://bugfree.ixiaochuan.cn/job/zuiyou_oversea/410/artifact/build/1.59.0.111.apk",
                         "https://apk.izuiyou.com/cocofun/android/1.59.0.111.apk",
-                        HistoryResponse.STATUS_OK,
+                        HistoryResponseItem.STATUS_OK,
                         "wuhongbo",
                         1605523664,
                 ),
-                HistoryResponse(
+                HistoryResponseItem(
                         "dev/1.59",
                         "1.59.0",
                         "release",
-                        HistoryResponse.CATEGORY_INTEGRATED,
+                        HistoryResponseItem.CATEGORY_INTEGRATED,
                         """
                             1.修改资料重名后的提示
                             2.我的”页面任务中心入口
@@ -70,7 +70,7 @@ class Root {
                         """,
                         "http://bugfree.ixiaochuan.cn/job/zuiyou_oversea/410/artifact/build/1.59.0.apk",
                         "https://apk.izuiyou.com/cocofun/android/1.59.0.apk",
-                        HistoryResponse.STATUS_OK,
+                        HistoryResponseItem.STATUS_OK,
                         "wuhongbo",
                         1605513664,
                 ),
@@ -79,7 +79,7 @@ class Root {
 
 }
 
-data class HistoryResponse(
+data class HistoryResponseItem(
         val branch: String,
         val ver: String,
         val buildType: String,
