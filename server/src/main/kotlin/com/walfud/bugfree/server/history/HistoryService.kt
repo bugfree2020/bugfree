@@ -8,7 +8,7 @@ import reactor.core.publisher.Flux
 class HistoryService @Autowired constructor(
         private val historyRepository: HistoryRepository
 ) {
-    fun findBy(ver: String?, buildType: String?, category: Int?, offset: Int, limit: Int): Flux<DbHistory>? {
+    fun findBy(ver: String?, buildType: String?, category: String?, offset: Int, limit: Int): Flux<DbHistory>? {
         return historyRepository.findAll()
                 .filter {
                     if (ver != null && ver != it.ver) return@filter false

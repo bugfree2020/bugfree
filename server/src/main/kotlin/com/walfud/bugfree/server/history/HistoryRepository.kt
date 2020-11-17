@@ -1,26 +1,29 @@
 package com.walfud.bugfree.server.history
 
-import org.springframework.data.r2dbc.repository.Query
+import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.reactive.ReactiveCrudRepository
-import reactor.core.publisher.Flux
 import java.sql.Timestamp
 
+const val HISTORY_RESULT_OK = 0
+const val HISTORY_RESULT_FAIL = 1
+const val HISTORY_RESULT_CANCEL = 5
 
+@Table("history")
 data class DbHistory(
-        val id: String,
-        val name: String,
-        val branch: String,
-        val ver: String,
-        val buildType: String,
-        val category: Int,
-        val desc: String,
-        val urlInner: String,
-        val urlOuter: String,
-        val result: Int,
-        val who: String,
-        val extra: String,
-        val createTime: Timestamp,
-        val updateTime: Timestamp,
+        var id: String,
+        var name: String,
+        var branch: String,
+        var ver: String,
+        var buildType: String,
+        var category: String,
+        var content: String,
+        var urlInner: String,
+        var urlOuter: String,
+        var result: Int,
+        var who: String,
+        var extra: String?,
+        var createTime: Timestamp,
+        var updateTime: Timestamp,
 )
 
 interface HistoryRepository : ReactiveCrudRepository<DbHistory, Long>

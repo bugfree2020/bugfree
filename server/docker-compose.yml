@@ -1,0 +1,41 @@
+version: "2.4"
+services:
+  bugfree-java:
+    container_name: bugfree-java
+    image: walfud/dockers:openjdk11_gradle6.6.1
+    working_dir: /bugfree
+    command: sh -c 'chmod +x ./gradlew && ./gradlew clean build bootRun'
+    restart: always
+    volumes:
+      - .:/bugfree
+    ports:
+      - 28080:8080
+      - 25005:5005
+    depends_on:
+      - bugfree-mysql
+    logging:
+      options:
+        max-size: 1g
+    cpus: 0.75
+    mem_limit: 1g
+    memswap_limit: 4g
+
+  bugfree-mysql:
+    container_name: bugfree-mysql
+    image: mysql:8.0
+    restart: always
+    env_file: .env
+    volumes:
+      - ./mysql/conf.d:/etc/mysql/conf.d:ro
+      - ./mysql/my.cnf:/etc/mysql/my.cnf:ro
+      - ./mysql/reset.sql:/docker-entrypoint-initdb.d/reset.sql:ro
+      - ./data/bugfree-mysql:/var/lib/mysql
+    ports:
+      - 23306:3306
+      - 23307:33060
+    logging:
+      options:
+        max-size: "100m"
+    cpus: 0.5
+    mem_limit: 1g
+    memswap_limit: 4g
