@@ -18,7 +18,10 @@ class FakeResponsitory {
 8.合并直播
 9.点赞实验组b添加点赞动效
 10.release 终包
-11.targetSdkVersion = 29""",
+11.targetSdkVersion = 29
+
+
+""",
         "https://www.baidu.com",
         "https://www.sina.com.cn",
         0,

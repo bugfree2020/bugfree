@@ -37,28 +37,16 @@ class ContentListScreen extends State<BodyContentWidget>
         itemCount: _data == null ? 0 : _data.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount:
-              widget.sizingInformation.screenSize.width / 1.4 <= 860 ? 2 : 5,
+              widget.sizingInformation.screenSize.width / 1.4 <= 860 ? 1 : 5,
           childAspectRatio:
               widget.sizingInformation.screenSize.width / 1.4 <= 860
-                  ? 0.4
-                  : 0.8,
+                  ? 0.7
+                  : 0.75,
         ),
         itemBuilder: (context, index) {
           return Stack(
             children: <Widget>[
               getGridCard(index),
-              Container(
-                width: 300,
-                height: 200,
-                foregroundDecoration: BadgeDecoration(
-                  badgeColor: Colors.green,
-                  badgeSize: 70,
-                  textSpan: TextSpan(
-                    text: 'AWESOME',
-                    style: TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                ),
-              ),
             ],
           );
         },
@@ -97,49 +85,51 @@ class ContentListScreen extends State<BodyContentWidget>
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                data.title,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "编译人:${data.person}",
-                style: TextStyle(
-                  color: Colors.grey[400],
-                  fontSize: 14,
+              Row(children: [
+                Text(
+                  data.title,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
                 ),
+                SizedBox(width: 5),
+                buildTipsButtonCustom(buildCategory, Colors.white, Colors.black26),
+              ]),
+              SizedBox(height: 5),
+              Row(
+                children: [
+                  buildTipsButton("版本:${data.ver}", Colors.deepPurple[100]),
+                  SizedBox(width: 5),
+                  buildTipsButton(data.build_type, Colors.greenAccent[100]),
+                  SizedBox(width: 5),
+                  buildTipsButton(buildStatus, Colors.yellow[100]),
+                ],
               ),
-              Text(
-                "版本:${data.ver}",
-                style: TextStyle(
-                  color: Colors.grey[400],
-                  fontSize: 14,
+              SizedBox(height: 5),
+              Row(
+                children: [
+                  buildTipsButton(data.person, Colors.red[100]),
+                  SizedBox(width: 5),
+                  buildTipsButton(data.branch, Colors.greenAccent[100]),
+                ],
+              ),
+              SizedBox(height: 10),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                decoration: buildCardContainer(),
+                child: Text(
+                  _data[index].desc,
+                  style: TextStyle(
+                    decorationColor: Colors.red,
+                    fontSize: 13,
+                    color: Colors.red,
+                  ),
                 ),
-              ),
-              Text(
-                "分支:${data.branch}",
-                style: TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              Text(
-                "编译类型:${data.build_type}",
-                style: TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              Text(
-                "编译状态:$buildStatus",
-                style: TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              Text(
-                "编译渠道:$buildCategory",
-                style: TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              Text(
-                _data[index].desc,
-                style: TextStyle(fontSize: 14, color: Colors.red),
               ),
             ],
           ),
+          SizedBox(height: 10),
           Container(
             child: Row(
               children: [
@@ -157,6 +147,19 @@ class ContentListScreen extends State<BodyContentWidget>
         ],
       ),
     );
+  }
+
+  MaterialButton buildTipsButtonCustom(String info, Color txtColor, Color bgColor) {
+    return MaterialButton(
+      child: Text(info),
+      textColor: txtColor,
+      color: bgColor,
+      onPressed: () {},
+    );
+  }
+
+  MaterialButton buildTipsButton(String info, Color bgColor) {
+    return buildTipsButtonCustom(info, Colors.black, bgColor);
   }
 
   BoxDecoration buildCardContainer() {
