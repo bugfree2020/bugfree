@@ -1,14 +1,15 @@
 package com.walfud.bugfree.server.history
 
-import org.springframework.beans.factory.annotation.Autowired
+import com.walfud.bugfree.server.BaseService
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 @Service
-class HistoryService @Autowired constructor(
-        private val historyRepository: HistoryRepository
-) {
-    fun findBy(ver: String?, buildType: String?, category: String?, offset: Int, limit: Int): Flux<DbHistory>? {
+class HistoryService : BaseService() {
+    @Transactional
+    fun findBy(ver: String?, buildType: String?, category: String?, offset: Int, limit: Int): Flux<DbHistory> {
         return historyRepository.findAll()
                 .filter {
                     if (ver != null && ver != it.ver) return@filter false
@@ -19,5 +20,36 @@ class HistoryService @Autowired constructor(
                 .sort { o1, o2 -> o1.createTime.compareTo(o2.createTime) }
                 .skipLast(offset)
                 .take(limit.toLong())
+    }
+
+    @Transactional
+    fun insertIfAbsent(dbHistory: DbHistory): Mono<Boolean> {
+        return historyRepository.findAll()
+                .filter { it.jenkinsId == dbHistory.jenkinsId }
+                .hasElements()
+                .flatMap {
+                    return@flatMap if (it) {
+                        Mono.just(false)
+                    } else {
+                        historyRepository.insert(
+                               dbHistory.id,
+                               dbHistory.jenkinsId,
+                               dbHistory.name,
+                               dbHistory.branch,
+                               dbHistory.ver,
+                               dbHistory.buildType,
+                               dbHistory.category,
+                               dbHistory.content,
+                               dbHistory.urlInner,
+                               dbHistory.urlOuter,
+                               dbHistory.result,
+                               dbHistory.who,
+                               dbHistory.extra,
+                               dbHistory.createTime,
+                               dbHistory.updateTime,
+                        )
+                                .map { true }
+                    }
+                }
     }
 }

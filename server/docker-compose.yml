@@ -4,20 +4,20 @@ services:
     container_name: bugfree-java
     image: walfud/dockers:openjdk11_gradle6.6.1
     working_dir: /bugfree
-    command: sh -c 'chmod +x ./gradlew && ./gradlew clean build bootRun'
+    command: sh -c "chmod +x ./gradlew && ./gradlew build && java '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005' -jar ./build/libs/server-0.0.1-SNAPSHOT.jar"
+#    command: sh -c 'chmod +x ./gradlew && ./gradlew clean build bootRun'
     restart: always
     volumes:
       - .:/bugfree
     ports:
       - 28080:8080
-      - 25005:5005
+      - 28081:5005
     depends_on:
       - bugfree-mysql
     logging:
       options:
         max-size: 1g
-    cpus: 0.75
-    mem_limit: 1g
+    mem_limit: 2g
     memswap_limit: 4g
 
   bugfree-mysql:

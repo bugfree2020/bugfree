@@ -1,16 +1,20 @@
 package com.walfud.bugfree.server.history
 
 import com.walfud.bugfree.server.PAGE_SIZE
+import com.walfud.bugfree.server.jenkins.JenkinsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
+import java.time.ZoneOffset
 
 @RestController
 @RequestMapping("/history")
 class HistoryController @Autowired constructor(
-        val historyService: HistoryService
+        val historyService: HistoryService,
+        val jenkinsService: JenkinsService,
 ) {
 
     @GetMapping
@@ -19,6 +23,14 @@ class HistoryController @Autowired constructor(
                 ?.map(HistoryResponseItem::fromDbHistory)
     }
 
+    @PostMapping("/sync")
+    fun sync(): Flux<DbHistory> {
+        val syncTask = jenkinsService.loadHistory()
+                .flatMap { historyService.insertIfAbsent(it) }
+        val historyTask = historyService.findBy(null, null, null, 0, Int.MAX_VALUE)
+
+        return syncTask.thenMany(historyTask)
+    }
 }
 
 data class HistoryResponseItem(
@@ -44,7 +56,7 @@ data class HistoryResponseItem(
                 dbHistory.urlOuter,
                 dbHistory.result,
                 dbHistory.who,
-                dbHistory.createTime.toInstant().epochSecond,
+                dbHistory.createTime.toEpochSecond(ZoneOffset.UTC),
         )
     }
 }
