@@ -120,13 +120,13 @@ class ContentListScreen extends State<BodyContentWidget>
                       stateColor, BorderRadius.circular(15)),
                 ],
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 5),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
                 decoration: buildCardContainer(),
                 child: Text(
                   _data[index].desc,
-                  maxLines: 15,
+                  maxLines: 17,
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.black87,
