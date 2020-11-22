@@ -28,9 +28,8 @@ class ContentListScreen extends State<BodyContentWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: Container(
-      margin: EdgeInsets.symmetric(horizontal: 20),
+    return  Container(
+      margin: EdgeInsets.symmetric(horizontal: 10),
       child: GridView.builder(
         // physics: const NeverScrollableScrollPhysics(),
         itemCount: _data == null ? 0 : _data.length,
@@ -49,7 +48,6 @@ class ContentListScreen extends State<BodyContentWidget>
             ],
           );
         },
-      ),
     ));
   }
 
@@ -96,8 +94,8 @@ class ContentListScreen extends State<BodyContentWidget>
                       fontWeight: FontWeight.bold),
                 ),
                 SizedBox(width: 5),
-                buildTipsButtonCustomWithShape(
-                    buildCategory, Colors.white, Colors.black87, BorderRadius.circular(45)),
+                buildTipsButtonCustomWithShape(buildCategory, Colors.white,
+                    Colors.black87, BorderRadius.circular(45)),
               ]),
               SizedBox(height: 5),
               Row(
@@ -112,13 +110,14 @@ class ContentListScreen extends State<BodyContentWidget>
               SizedBox(height: 5),
               Row(
                 children: [
-                  buildTipsButtonCustomWithShape(
-                      "版本:${data.ver}", Colors.white, Colors.orange, BorderRadius.circular(15)),
+                  buildTipsButtonCustomWithShape("版本:${data.ver}", Colors.white,
+                      Colors.orange, BorderRadius.circular(15)),
                   SizedBox(width: 5),
-                  buildTipsButtonCustomWithShape(
-                      data.build_type, Colors.white, Colors.orange, BorderRadius.circular(15)),
+                  buildTipsButtonCustomWithShape(data.build_type, Colors.white,
+                      Colors.orange, BorderRadius.circular(15)),
                   SizedBox(width: 5),
-                  buildTipsButtonCustomWithShape(buildStatus, Colors.white, stateColor, BorderRadius.circular(15)),
+                  buildTipsButtonCustomWithShape(buildStatus, Colors.white,
+                      stateColor, BorderRadius.circular(15)),
                 ],
               ),
               SizedBox(height: 10),
@@ -127,6 +126,7 @@ class ContentListScreen extends State<BodyContentWidget>
                 decoration: buildCardContainer(),
                 child: Text(
                   _data[index].desc,
+                  maxLines: 15,
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.black87,
@@ -143,7 +143,7 @@ class ContentListScreen extends State<BodyContentWidget>
                     "https://apk.izuiyou.com/download/zuiyou_lite.latest.h5_share.apk"),
                 Expanded(
                   flex: 1,
-                  child: Container(),
+                  child: Text(""),
                 ),
                 buildDownloadButtom(context, '内网下载',
                     "https://apk.izuiyou.com/download/zuiyou_lite.latest.h5_share.apk"),
