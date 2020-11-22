@@ -2,7 +2,6 @@ import 'package:app/data/pkg_data.dart';
 import 'package:app/net/ci_history_listener.dart';
 import 'package:app/net/net_work.dart';
 import 'package:app/responsiblity/TestData.dart';
-import 'package:app/widget/BadgePainter.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:flutter/rendering.dart';
@@ -67,11 +66,14 @@ class ContentListScreen extends State<BodyContentWidget>
     }
     var status = data.status;
     String buildStatus = "";
+    var stateColor = Colors.green;
     if (status == 0) {
       buildStatus = "成功";
     } else if (status == 1) {
+      stateColor = Colors.red;
       buildStatus = "失败";
     } else if (status == 5) {
+      stateColor = Colors.amber;
       buildStatus = "取消";
     }
     return Container(
@@ -99,31 +101,30 @@ class ContentListScreen extends State<BodyContentWidget>
               SizedBox(height: 5),
               Row(
                 children: [
-                  buildTipsButton("版本:${data.ver}", Colors.deepPurple[100]),
+                  buildTipsButtonCustom("版本:${data.ver}", Colors.white, Colors.orange),
                   SizedBox(width: 5),
-                  buildTipsButton(data.build_type, Colors.greenAccent[100]),
+                  buildTipsButtonCustom(data.build_type, Colors.white, Colors.orange),
                   SizedBox(width: 5),
-                  buildTipsButton(buildStatus, Colors.yellow[100]),
+                  buildTipsButtonCustom(buildStatus, Colors.white, stateColor),
                 ],
               ),
               SizedBox(height: 5),
               Row(
                 children: [
-                  buildTipsButton(data.person, Colors.red[100]),
+                  buildTipsButtonCustom(data.person, Colors.white, Colors.black26),
                   SizedBox(width: 5),
-                  buildTipsButton("分支:${data.branch}", Colors.greenAccent[100]),
+                  buildTipsButtonCustom("分支:${data.branch}", Colors.white, Colors.black26),
                 ],
               ),
               SizedBox(height: 10),
               Container(
-                padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                padding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
                 decoration: buildCardContainer(),
                 child: Text(
                   _data[index].desc,
                   style: TextStyle(
-                    decorationColor: Colors.red,
                     fontSize: 13,
-                    color: Colors.red,
+                    color: Colors.black87,
                   ),
                 ),
               ),
