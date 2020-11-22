@@ -111,7 +111,7 @@ class ContentListScreen extends State<BodyContentWidget>
                 children: [
                   buildTipsButton(data.person, Colors.red[100]),
                   SizedBox(width: 5),
-                  buildTipsButton(data.branch, Colors.greenAccent[100]),
+                  buildTipsButton("分支:${data.branch}", Colors.greenAccent[100]),
                 ],
               ),
               SizedBox(height: 10),
