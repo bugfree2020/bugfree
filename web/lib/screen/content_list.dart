@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:app/data/pkg_data.dart';
 import 'package:app/net/ci_history_listener.dart';
 import 'package:app/net/net_work.dart';
@@ -28,30 +30,27 @@ class ContentListScreen extends State<BodyContentWidget>
 
   @override
   Widget build(BuildContext context) {
-    return  Container(
-      margin: EdgeInsets.symmetric(horizontal: 10),
-      child: GridView.builder(
-        // physics: const NeverScrollableScrollPhysics(),
-        itemCount: _data == null ? 0 : _data.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount:
-              widget.sizingInformation.screenSize.width / 1.4 <= 860 ? 1 : 5,
-          childAspectRatio:
-              widget.sizingInformation.screenSize.width / 1.4 <= 860
-                  ? 0.7
-                  : 0.75,
-        ),
-        itemBuilder: (context, index) {
-          return Stack(
-            children: <Widget>[
-              getGridCard(index),
-            ],
-          );
-        },
-    ));
+    var isSmallScreen = widget.sizingInformation.screenSize.width / 1.4 <= 860;
+    return Container(
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        child: GridView.builder(
+          // physics: const NeverScrollableScrollPhysics(),
+          itemCount: _data == null ? 0 : _data.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: isSmallScreen ? 1 : 5,
+            childAspectRatio: isSmallScreen ? 0.85 : 0.74,
+          ),
+          itemBuilder: (context, index) {
+            return Stack(
+              children: <Widget>[
+                getGridCard(index, isSmallScreen),
+              ],
+            );
+          },
+        ));
   }
 
-  Container getGridCard(int index) {
+  Container getGridCard(int index, bool isSmallScreen) {
     var data = _data[index];
     var category = data.category;
     String buildCategory = "";
@@ -120,13 +119,13 @@ class ContentListScreen extends State<BodyContentWidget>
                       stateColor, BorderRadius.circular(15)),
                 ],
               ),
-              SizedBox(height: 5),
+              SizedBox(height: 7),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
                 decoration: buildCardContainer(),
                 child: Text(
                   _data[index].desc,
-                  maxLines: 17,
+                  maxLines: isSmallScreen ? 18 : 17,
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.black87,

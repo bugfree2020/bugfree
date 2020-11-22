@@ -3,7 +3,7 @@ import 'package:app/data/pkg_data.dart';
 class FakeResponsitory {
   static List<DataPkgInfo> testDatas = [
     DataPkgInfo(
-        "Cocofun Android",
+        "Cocofun AndroidAndroidAndroidAndroidAndroid",
         "dev/1.60",
         "1.60.1",
         0,
