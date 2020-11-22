@@ -66,13 +66,13 @@ class ContentListScreen extends State<BodyContentWidget>
     String buildStatus = "";
     var stateColor = Colors.green;
     if (status == 0) {
-      buildStatus = "成功";
+      buildStatus = "打包成功";
     } else if (status == 1) {
       stateColor = Colors.red;
-      buildStatus = "失败";
+      buildStatus = "打包失败";
     } else if (status == 5) {
       stateColor = Colors.purple;
-      buildStatus = "取消";
+      buildStatus = "打包取消";
     }
     return Container(
       margin: EdgeInsets.only(right: 5, top: 5, bottom: 5, left: 5),
