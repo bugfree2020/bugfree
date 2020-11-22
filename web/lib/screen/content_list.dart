@@ -96,24 +96,29 @@ class ContentListScreen extends State<BodyContentWidget>
                       fontWeight: FontWeight.bold),
                 ),
                 SizedBox(width: 5),
-                buildTipsButtonCustom(buildCategory, Colors.white, Colors.black26),
+                buildTipsButtonCustomWithShape(
+                    buildCategory, Colors.white, Colors.black87, BorderRadius.circular(45)),
               ]),
               SizedBox(height: 5),
               Row(
                 children: [
-                  buildTipsButtonCustom("版本:${data.ver}", Colors.white, Colors.orange),
+                  buildTipsButtonCustom(
+                      "版本:${data.ver}", Colors.white, Colors.orange),
                   SizedBox(width: 5),
-                  buildTipsButtonCustom(data.build_type, Colors.white, Colors.orange),
+                  buildTipsButtonCustom(
+                      data.build_type, Colors.white, Colors.orange),
                   SizedBox(width: 5),
-                  buildTipsButtonCustom(buildStatus, Colors.white, stateColor),
+                  buildTipsButtonCustomWithShape(buildStatus, Colors.white, stateColor, BorderRadius.circular(15)),
                 ],
               ),
               SizedBox(height: 5),
               Row(
                 children: [
-                  buildTipsButtonCustom(data.person, Colors.white, Colors.black26),
+                  buildTipsButtonCustom(
+                      data.person, Colors.white, Colors.black26),
                   SizedBox(width: 5),
-                  buildTipsButtonCustom("分支:${data.branch}", Colors.white, Colors.black26),
+                  buildTipsButtonCustom(
+                      "分支:${data.branch}", Colors.white, Colors.black26),
                 ],
               ),
               SizedBox(height: 10),
@@ -150,7 +155,21 @@ class ContentListScreen extends State<BodyContentWidget>
     );
   }
 
-  MaterialButton buildTipsButtonCustom(String info, Color txtColor, Color bgColor) {
+  MaterialButton buildTipsButtonCustomWithShape(
+      String info, Color txtColor, Color bgColor, BorderRadius radius) {
+    return MaterialButton(
+      child: Text(info),
+      textColor: txtColor,
+      color: bgColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: radius,
+      ),
+      onPressed: () {},
+    );
+  }
+
+  MaterialButton buildTipsButtonCustom(
+      String info, Color txtColor, Color bgColor) {
     return MaterialButton(
       child: Text(info),
       textColor: txtColor,
@@ -184,6 +203,9 @@ class ContentListScreen extends State<BodyContentWidget>
         child: Text(content),
         textColor: Colors.white,
         color: Colors.blue,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
         padding: EdgeInsets.symmetric(vertical: 15),
         onPressed: () {
           launchDownload(context, url);
