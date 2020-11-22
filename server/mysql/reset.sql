@@ -14,6 +14,7 @@ DROP TABLE IF EXISTS `history`;
 CREATE TABLE `history`
 (
     id          CHAR(36) PRIMARY KEY,
+    jenkins_id  TINYTEXT,
 
     name        TINYTEXT,
     branch      TINYTEXT,

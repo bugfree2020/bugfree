@@ -13,6 +13,7 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -28,6 +29,7 @@ dependencies {
     runtimeOnly("mysql:mysql-connector-java")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.cdancy:jenkins-rest:0.0.27:all")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 

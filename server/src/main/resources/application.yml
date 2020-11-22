@@ -3,7 +3,7 @@ server:
 
 spring:
   r2dbc:
-    url: r2dbcs:mysql://localhost:23306/bugfree?sslMode=DISABLED
+    url: r2dbcs:mysql://172.20.20.194:23306/bugfree?sslMode=DISABLED
     username: bugfree
     password: bugfree
     pool:

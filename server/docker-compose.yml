@@ -10,7 +10,7 @@ services:
       - .:/bugfree
     ports:
       - 28080:8080
-      - 25005:5005
+      - 28081:5005
     depends_on:
       - bugfree-mysql
     logging:
