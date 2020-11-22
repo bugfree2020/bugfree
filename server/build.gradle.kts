@@ -30,6 +30,7 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.cdancy:jenkins-rest:0.0.27:all")
+    implementation("javax.xml.bind:jaxb-api:2.3.0")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
