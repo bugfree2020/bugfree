@@ -12,8 +12,25 @@
  */
 import 'dart:convert';
 
-class DataPkgInfo {
+class CIPkgInfoList {
+  List<DataPkgInfo> data;
 
+  CIPkgInfoList.fromJson(jsonRes) {
+    if (data != null && data.length > 0) {
+      data.clear();
+    }
+    for (var dataItem in data == null ? [] : jsonRes['data']) {
+      data.add(dataItem == null ? null : new DataPkgInfo.fromJson(dataItem));
+    }
+  }
+
+  @override
+  String toString() {
+    return 'CIPkgInfoList{data: $data}';
+  }
+}
+
+class DataPkgInfo {
   String title;
 
   String branch;
@@ -34,6 +51,24 @@ class DataPkgInfo {
 
   int status;
 
-  DataPkgInfo(this.title, this.branch, this.ver, this.category, this.build_type, this.desc,
-      this.url_inner, this.url_outer, this.status, this.person);
+  DataPkgInfo(this.title, this.branch, this.ver, this.category, this.build_type,
+      this.desc, this.url_inner, this.url_outer, this.status, this.person);
+
+  DataPkgInfo.fromJson(jsonRes) {
+    this.title = jsonRes['title'];
+    this.branch = jsonRes['branch'];
+    this.ver = jsonRes['ver'];
+    this.category = jsonRes['category'];
+    this.build_type = jsonRes['build_type'];
+    this.desc = jsonRes['desc'];
+    this.url_inner = jsonRes['url_inner'];
+    this.url_outer = jsonRes['url_outer'];
+    this.status = jsonRes['status'];
+    this.person = jsonRes['person'];
+  }
+
+  @override
+  String toString() {
+    return 'DataPkgInfo{title: $title, branch: $branch, person: $person, ver: $ver, build_type: $build_type, category: $category, desc: $desc, url_inner: $url_inner, url_outer: $url_outer, status: $status}';
+  }
 }
