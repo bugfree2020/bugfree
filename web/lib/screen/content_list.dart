@@ -73,7 +73,7 @@ class ContentListScreen extends State<BodyContentWidget>
       stateColor = Colors.red;
       buildStatus = "失败";
     } else if (status == 5) {
-      stateColor = Colors.amber;
+      stateColor = Colors.purple;
       buildStatus = "取消";
     }
     return Container(
@@ -103,22 +103,22 @@ class ContentListScreen extends State<BodyContentWidget>
               Row(
                 children: [
                   buildTipsButtonCustom(
-                      "版本:${data.ver}", Colors.white, Colors.orange),
+                      data.person, Colors.white, Colors.black26),
                   SizedBox(width: 5),
                   buildTipsButtonCustom(
-                      data.build_type, Colors.white, Colors.orange),
-                  SizedBox(width: 5),
-                  buildTipsButtonCustomWithShape(buildStatus, Colors.white, stateColor, BorderRadius.circular(15)),
+                      "分支:${data.branch}", Colors.white, Colors.black26),
                 ],
               ),
               SizedBox(height: 5),
               Row(
                 children: [
-                  buildTipsButtonCustom(
-                      data.person, Colors.white, Colors.black26),
+                  buildTipsButtonCustomWithShape(
+                      "版本:${data.ver}", Colors.white, Colors.orange, BorderRadius.circular(15)),
                   SizedBox(width: 5),
-                  buildTipsButtonCustom(
-                      "分支:${data.branch}", Colors.white, Colors.black26),
+                  buildTipsButtonCustomWithShape(
+                      data.build_type, Colors.white, Colors.orange, BorderRadius.circular(15)),
+                  SizedBox(width: 5),
+                  buildTipsButtonCustomWithShape(buildStatus, Colors.white, stateColor, BorderRadius.circular(15)),
                 ],
               ),
               SizedBox(height: 10),
