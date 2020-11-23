@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.scheduler.Schedulers
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.*
 
 const val JOB_NAME = "zuiyou_oversea"
@@ -47,6 +48,7 @@ class JenkinsService @Autowired constructor(
                     }
                     val cause = buildInfo.actions().singleOrNull { it.causes().isNotEmpty() }?.causes()
                     val who = cause?.singleOrNull { it.userName().isNotEmpty() }?.userName() ?: ""
+                    val createTime = LocalDateTime.ofEpochSecond(buildInfo.timestamp() / 1000, 0, ZoneOffset.UTC)
 
                     DbHistory(
                             UUID.randomUUID().toString(),
@@ -62,10 +64,10 @@ class JenkinsService @Autowired constructor(
                             result,
                             who,
                             null,
-                            LocalDateTime.now(),
+                            createTime,
                             LocalDateTime.now(),
                     )
                 }
     }
-
 }
+
