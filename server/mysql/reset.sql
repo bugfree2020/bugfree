@@ -21,7 +21,7 @@ CREATE TABLE `history`
     ver         TINYTEXT,
     build_type  TINYTEXT,
     category    TINYTEXT,
-    content     TINYTEXT,
+    content     TEXT,
     url_inner   TINYTEXT,
     url_outer   TINYTEXT,
     result      TINYTEXT,
