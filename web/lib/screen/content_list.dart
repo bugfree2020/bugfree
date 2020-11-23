@@ -20,7 +20,7 @@ class BodyContentWidget extends StatefulWidget {
 
 class ContentListScreen extends State<BodyContentWidget>
     implements OnCIHistoryListener {
-  var _data = FakeResponsitory.testDatas;
+  var _data;
 
   @override
   void initState() {
@@ -48,16 +48,8 @@ class ContentListScreen extends State<BodyContentWidget>
 
   Container getGridCard(int index, bool isSmallScreen) {
     var data = _data[index];
-    var category = data.category;
-    String buildCategory = "";
-    if (category == 0) {
-      buildCategory = "集成包";
-    } else if (category == 1) {
-      buildCategory = "主版本";
-    } else if (category == 2) {
-      buildCategory = "直播";
-    }
-    var status = data.status;
+    var buildCategory = data.category;
+    var status = data.result;
     String buildStatus = "";
     var stateColor = Colors.green;
     if (status == 0) {
@@ -96,7 +88,7 @@ class ContentListScreen extends State<BodyContentWidget>
               Row(
                 children: [
                   buildTipsButtonCustom(
-                      data.person, Colors.white, Colors.black26),
+                      data.who, Colors.white, Colors.black26),
                   SizedBox(width: 5),
                   buildTipsButtonCustom(
                       "分支:${data.branch}", Colors.white, Colors.black26),
@@ -108,7 +100,7 @@ class ContentListScreen extends State<BodyContentWidget>
                   buildTipsButtonCustomWithShape("版本:${data.ver}", Colors.white,
                       Colors.orange, BorderRadius.circular(15)),
                   SizedBox(width: 5),
-                  buildTipsButtonCustomWithShape(data.build_type, Colors.white,
+                  buildTipsButtonCustomWithShape(data.buildType, Colors.white,
                       Colors.orange, BorderRadius.circular(15)),
                   SizedBox(width: 5),
                   buildTipsButtonCustomWithShape(buildStatus, Colors.white,

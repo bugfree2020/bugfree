@@ -1,6 +1,7 @@
 import 'package:app/data/pkg_data.dart';
 
 class FakeResponsitory {
+/*
   static List<DataPkgInfo> testDatas = [
     DataPkgInfo(
         "Cocofun Android",
@@ -431,4 +432,5 @@ class FakeResponsitory {
           0,
           "cocoyoung"),
   ];
+*/
 }

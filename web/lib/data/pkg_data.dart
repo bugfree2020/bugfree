@@ -16,12 +16,26 @@ class CIPkgInfoList {
   List<DataPkgInfo> data;
 
   CIPkgInfoList.fromJson(jsonRes) {
-    if (data != null && data.length > 0) {
-      data.clear();
+    data = List();
+    for (var dataItem in jsonRes == null ? [] : jsonRes) {
+      String title = dataItem['title'];
+      String branch = dataItem['branch'];
+      String ver = dataItem['ver'];
+      String category = utf8convert(dataItem['category']);
+      String buildType = dataItem['buildType'];
+      String desc = utf8convert(dataItem['desc']);
+      String urlInner = dataItem['url_inner'];
+      String urlOuter = dataItem['url_outer'];
+      int result = dataItem['result'];
+      String who = dataItem['who'];
+      data.add(DataPkgInfo("Cocofun Android", branch, ver, category, buildType, desc,
+          urlInner, urlOuter, result, who));
     }
-    for (var dataItem in data == null ? [] : jsonRes['data']) {
-      data.add(dataItem == null ? null : new DataPkgInfo.fromJson(dataItem));
-    }
+  }
+
+  String utf8convert(String text) {
+    List<int> bytes = text.toString().codeUnits;
+    return utf8.decode(bytes);
   }
 
   @override
@@ -35,40 +49,43 @@ class DataPkgInfo {
 
   String branch;
 
-  String person;
+  String who;
 
   String ver;
 
-  String build_type;
+  String buildType;
 
-  int category;
+  String category;
 
   String desc;
 
-  String url_inner;
+  String urlInner;
 
-  String url_outer;
+  String urlOuter;
 
-  int status;
+  int result;
 
-  DataPkgInfo(this.title, this.branch, this.ver, this.category, this.build_type,
-      this.desc, this.url_inner, this.url_outer, this.status, this.person);
+  int timestamp;
+
+  DataPkgInfo(this.title, this.branch, this.ver, this.category, this.buildType,
+      this.desc, this.urlInner, this.urlOuter, this.result, this.who);
 
   DataPkgInfo.fromJson(jsonRes) {
     this.title = jsonRes['title'];
     this.branch = jsonRes['branch'];
     this.ver = jsonRes['ver'];
     this.category = jsonRes['category'];
-    this.build_type = jsonRes['build_type'];
+    this.buildType = jsonRes['buildType'];
     this.desc = jsonRes['desc'];
-    this.url_inner = jsonRes['url_inner'];
-    this.url_outer = jsonRes['url_outer'];
-    this.status = jsonRes['status'];
-    this.person = jsonRes['person'];
+    this.urlInner = jsonRes['urlInner'];
+    this.buildType = jsonRes['buildType'];
+    this.result = jsonRes['result'];
+    this.who = jsonRes['who'];
+    this.timestamp = jsonRes['timestamp'];
   }
 
   @override
   String toString() {
-    return 'DataPkgInfo{title: $title, branch: $branch, person: $person, ver: $ver, build_type: $build_type, category: $category, desc: $desc, url_inner: $url_inner, url_outer: $url_outer, status: $status}';
+    return 'DataPkgInfo{title: $title, branch: $branch, person: $who, ver: $ver, build_type: $buildType, category: $category, desc: $desc, url_inner: $urlInner, url_outer: $urlOuter, status: $result}';
   }
 }
