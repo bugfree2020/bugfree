@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 class JenkinsConfiguration {
     @Bean
     fun jenkinsClient(): JenkinsClient = JenkinsClient.builder()
-            .endPoint("http://172.20.20.194:8080")
-            .credentials("test:123456")
+            .endPoint("http://bugfree.ixiaochuan.cn")
+            .credentials("admin:123456")
             .build()
 }
