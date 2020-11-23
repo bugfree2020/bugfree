@@ -66,61 +66,59 @@ class ContentListScreen extends State<BodyContentWidget>
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: buildCardContainer(),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(children: [
+            Text(
+              data.title,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(width: 5),
+            buildTipsButtonCustomWithShape(buildCategory, Colors.white,
+                Colors.black87, BorderRadius.circular(45)),
+          ]),
+          SizedBox(height: 5),
+          Row(
             children: [
-              Row(children: [
-                Text(
-                  data.title,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(width: 5),
-                buildTipsButtonCustomWithShape(buildCategory, Colors.white,
-                    Colors.black87, BorderRadius.circular(45)),
-              ]),
-              SizedBox(height: 5),
-              Row(
-                children: [
-                  buildTipsButtonCustom(
-                      data.who, Colors.white, Colors.black26),
-                  SizedBox(width: 5),
-                  buildTipsButtonCustom(
-                      "分支:${data.branch}", Colors.white, Colors.black26),
-                ],
-              ),
-              SizedBox(height: 5),
-              Row(
-                children: [
-                  buildTipsButtonCustomWithShape("版本:${data.ver}", Colors.white,
-                      Colors.orange, BorderRadius.circular(15)),
-                  SizedBox(width: 5),
-                  buildTipsButtonCustomWithShape(data.buildType, Colors.white,
-                      Colors.orange, BorderRadius.circular(15)),
-                  SizedBox(width: 5),
-                  buildTipsButtonCustomWithShape(buildStatus, Colors.white,
-                      stateColor, BorderRadius.circular(15)),
-                ],
-              ),
-              SizedBox(height: 7),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                decoration: buildCardContainer(),
-                child: Text(
-                  _data[index].desc,
-                  maxLines: isSmallScreen ? 18 : 17,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
+              buildTipsButtonCustom(data.who, Colors.white, Colors.black26),
+              SizedBox(width: 5),
+              buildTipsButtonCustom(
+                  "分支:${data.branch}", Colors.white, Colors.black26),
             ],
+          ),
+          SizedBox(height: 5),
+          Row(
+            children: [
+              buildTipsButtonCustomWithShape("版本:${data.ver}", Colors.white,
+                  Colors.orange, BorderRadius.circular(15)),
+              SizedBox(width: 5),
+              buildTipsButtonCustomWithShape(data.buildType, Colors.white,
+                  Colors.orange, BorderRadius.circular(15)),
+              SizedBox(width: 5),
+              buildTipsButtonCustomWithShape(buildStatus, Colors.white,
+                  stateColor, BorderRadius.circular(15)),
+            ],
+          ),
+          SizedBox(height: 7),
+          Expanded(
+            flex: 1,
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+              decoration: buildCardContainer(),
+              child: Text(
+                _data[index].desc,
+                softWrap: true,
+                maxLines: isSmallScreen ? 20 : 21,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
           ),
           SizedBox(height: 10),
           Container(
