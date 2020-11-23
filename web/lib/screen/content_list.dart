@@ -70,8 +70,6 @@ class ContentListScreen extends State<BodyContentWidget>
       buildStatus = "打包取消";
     }
     return Container(
-      width: 200,
-      height: 400,
       margin: EdgeInsets.only(right: 5, top: 5, bottom: 5, left: 5),
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: buildCardContainer(),
