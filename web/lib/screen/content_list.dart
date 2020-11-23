@@ -20,7 +20,7 @@ class BodyContentWidget extends StatefulWidget {
 
 class ContentListScreen extends State<BodyContentWidget>
     implements OnCIHistoryListener {
-  var _data;
+  var _data = FakeResponsitory.testDatas;
 
   @override
   void initState() {
@@ -30,15 +30,27 @@ class ContentListScreen extends State<BodyContentWidget>
 
   @override
   Widget build(BuildContext context) {
-    var isSmallScreen = widget.sizingInformation.screenSize.width / 1.4 <= 860;
+    var width = widget.sizingInformation.screenSize.width;
+    var height = widget.sizingInformation.screenSize.height;
+    var size = height / width;
+    var gridCount = 1;
+    if (width > 1500) {
+      gridCount = 5;
+    } else if (width > 1000) {
+      gridCount = 3;
+    } else if (width > 500) {
+      gridCount = 2;
+    }
+    var isSmallScreen = gridCount == 1;
+    print("${height / width}    $width   $height");
     return Container(
         margin: EdgeInsets.symmetric(horizontal: 10),
         child: GridView.builder(
           // physics: const NeverScrollableScrollPhysics(),
           itemCount: _data == null ? 0 : _data.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: isSmallScreen ? 1 : 5,
-            childAspectRatio: isSmallScreen ? 0.85 : 0.74,
+            crossAxisCount: gridCount,
+            childAspectRatio: isSmallScreen ? 0.75 : 0.74,
           ),
           itemBuilder: (context, index) {
             return getGridCard(index, isSmallScreen);
@@ -112,9 +124,8 @@ class ContentListScreen extends State<BodyContentWidget>
               child: Text(
                 _data[index].desc,
                 softWrap: true,
-                maxLines: isSmallScreen ? 20 : 21,
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 16,
                   color: Colors.black87,
                 ),
               ),
