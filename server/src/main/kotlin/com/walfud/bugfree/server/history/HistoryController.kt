@@ -17,7 +17,7 @@ class HistoryController @Autowired constructor(
         val jenkinsService: JenkinsService,
 ) {
 
-    @GetMapping
+    @GetMapping(produces = ["application/json;charset=UTF-8"])
     fun history(ver: String?, buildType: String?, category: String?, page: Int?): Flux<HistoryResponseItem>? {
         return historyService.findBy(ver, buildType, category, page?.let { page * PAGE_SIZE } ?: 0, PAGE_SIZE)
                 ?.map(HistoryResponseItem::fromDbHistory)
