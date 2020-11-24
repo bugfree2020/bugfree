@@ -9,3 +9,12 @@ spring:
     pool:
       initialSize: 2
       maxSize: 10
+
+logging:
+  level:
+    root: INFO
+    com:
+      walfud:
+        bugfree:
+          server:
+            jenkins: DEBUG

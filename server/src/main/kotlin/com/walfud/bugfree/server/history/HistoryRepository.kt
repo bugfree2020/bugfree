@@ -6,7 +6,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
 
-interface HistoryRepository : ReactiveCrudRepository<DbHistory, Long> {
+interface HistoryRepository : ReactiveCrudRepository<DbHistory, String> {
     @Modifying
     @Query("""
                 INSERT INTO `history`

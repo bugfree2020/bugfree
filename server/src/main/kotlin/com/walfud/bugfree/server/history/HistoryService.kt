@@ -1,6 +1,7 @@
 package com.walfud.bugfree.server.history
 
 import com.walfud.bugfree.server.BaseService
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
@@ -9,7 +10,7 @@ import reactor.core.publisher.Mono
 @Service
 class HistoryService : BaseService() {
     @Transactional
-    fun findBy(ver: String?, buildType: String?, category: String?, offset: Int, limit: Int): Flux<DbHistory> {
+    fun findBy(ver: String?, buildType: String?, category: String?, pageable: Pageable): Flux<DbHistory> {
         return historyRepository.findAll()
                 .filter {
                     if (ver != null && ver != it.ver) return@filter false
@@ -18,8 +19,8 @@ class HistoryService : BaseService() {
                     true
                 }
                 .sort { o1, o2 -> o1.createTime.compareTo(o2.createTime) }
-                .skipLast(offset)
-                .take(limit.toLong())
+                .skipLast(pageable.let { if (it.isPaged) it.pageNumber * it.pageSize else null } ?: 0)
+                .take(pageable.let { if (it.isPaged) it.pageSize else null }?.toLong() ?: Long.MAX_VALUE)
     }
 
     @Transactional
