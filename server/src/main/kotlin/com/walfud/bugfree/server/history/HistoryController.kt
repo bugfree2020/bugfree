@@ -21,9 +21,9 @@ class HistoryController @Autowired constructor(
 ) {
 
     @GetMapping(produces = ["application/json;charset=UTF-8"])
-    fun history(ver: String?, buildType: String?, category: String?, @PageableDefault(value = 0, sort = ["timestamp"], direction = Sort.Direction.DESC) pageable: Pageable?): Flux<HistoryResponseItem>? {
+    fun history(ver: String?, buildType: String?, category: String?, @PageableDefault(size = PAGE_SIZE, sort = ["timestamp"], direction = Sort.Direction.DESC) pageable: Pageable?): Flux<HistoryResponseItem>? {
         return historyService.findBy(ver, buildType, category, pageable ?: Pageable.unpaged())
-                ?.map(HistoryResponseItem::fromDbHistory)
+                .map(HistoryResponseItem::fromDbHistory)
     }
 
     @PostMapping("/sync")
