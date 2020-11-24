@@ -30,15 +30,27 @@ class ContentListScreen extends State<BodyContentWidget>
 
   @override
   Widget build(BuildContext context) {
-    var isSmallScreen = widget.sizingInformation.screenSize.width / 1.4 <= 860;
+    var width = widget.sizingInformation.screenSize.width;
+    var height = widget.sizingInformation.screenSize.height;
+    var size = height / width;
+    var gridCount = 1;
+    if (width > 1500) {
+      gridCount = 5;
+    } else if (width > 1000) {
+      gridCount = 3;
+    } else if (width > 500) {
+      gridCount = 2;
+    }
+    var isSmallScreen = gridCount == 1;
+    print("${height / width}    $width   $height");
     return Container(
         margin: EdgeInsets.symmetric(horizontal: 10),
         child: GridView.builder(
           // physics: const NeverScrollableScrollPhysics(),
           itemCount: _data == null ? 0 : _data.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: isSmallScreen ? 1 : 5,
-            childAspectRatio: isSmallScreen ? 0.85 : 0.74,
+            crossAxisCount: gridCount,
+            childAspectRatio: isSmallScreen ? 0.75 : 0.74,
           ),
           itemBuilder: (context, index) {
             return getGridCard(index, isSmallScreen);
@@ -48,16 +60,8 @@ class ContentListScreen extends State<BodyContentWidget>
 
   Container getGridCard(int index, bool isSmallScreen) {
     var data = _data[index];
-    var category = data.category;
-    String buildCategory = "";
-    if (category == 0) {
-      buildCategory = "集成包";
-    } else if (category == 1) {
-      buildCategory = "主版本";
-    } else if (category == 2) {
-      buildCategory = "直播";
-    }
-    var status = data.status;
+    var buildCategory = data.category;
+    var status = data.result;
     String buildStatus = "";
     var stateColor = Colors.green;
     if (status == 0) {
@@ -70,67 +74,62 @@ class ContentListScreen extends State<BodyContentWidget>
       buildStatus = "打包取消";
     }
     return Container(
-      width: 200,
-      height: 400,
       margin: EdgeInsets.only(right: 5, top: 5, bottom: 5, left: 5),
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: buildCardContainer(),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(children: [
+            Text(
+              data.title,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(width: 5),
+            buildTipsButtonCustomWithShape(buildCategory, Colors.white,
+                Colors.black87, BorderRadius.circular(45)),
+          ]),
+          SizedBox(height: 5),
+          Row(
             children: [
-              Row(children: [
-                Text(
-                  data.title,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(width: 5),
-                buildTipsButtonCustomWithShape(buildCategory, Colors.white,
-                    Colors.black87, BorderRadius.circular(45)),
-              ]),
-              SizedBox(height: 5),
-              Row(
-                children: [
-                  buildTipsButtonCustom(
-                      data.person, Colors.white, Colors.black26),
-                  SizedBox(width: 5),
-                  buildTipsButtonCustom(
-                      "分支:${data.branch}", Colors.white, Colors.black26),
-                ],
-              ),
-              SizedBox(height: 5),
-              Row(
-                children: [
-                  buildTipsButtonCustomWithShape("版本:${data.ver}", Colors.white,
-                      Colors.orange, BorderRadius.circular(15)),
-                  SizedBox(width: 5),
-                  buildTipsButtonCustomWithShape(data.build_type, Colors.white,
-                      Colors.orange, BorderRadius.circular(15)),
-                  SizedBox(width: 5),
-                  buildTipsButtonCustomWithShape(buildStatus, Colors.white,
-                      stateColor, BorderRadius.circular(15)),
-                ],
-              ),
-              SizedBox(height: 7),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                decoration: buildCardContainer(),
-                child: Text(
-                  _data[index].desc,
-                  maxLines: isSmallScreen ? 18 : 17,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
+              buildTipsButtonCustom(data.who, Colors.white, Colors.black26),
+              SizedBox(width: 5),
+              buildTipsButtonCustom(
+                  "分支:${data.branch}", Colors.white, Colors.black26),
             ],
+          ),
+          SizedBox(height: 5),
+          Row(
+            children: [
+              buildTipsButtonCustomWithShape("版本:${data.ver}", Colors.white,
+                  Colors.orange, BorderRadius.circular(15)),
+              SizedBox(width: 5),
+              buildTipsButtonCustomWithShape(data.buildType, Colors.white,
+                  Colors.orange, BorderRadius.circular(15)),
+              SizedBox(width: 5),
+              buildTipsButtonCustomWithShape(buildStatus, Colors.white,
+                  stateColor, BorderRadius.circular(15)),
+            ],
+          ),
+          SizedBox(height: 7),
+          Expanded(
+            flex: 1,
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+              decoration: buildCardContainer(),
+              child: Text(
+                _data[index].desc,
+                softWrap: true,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
           ),
           SizedBox(height: 10),
           Container(
