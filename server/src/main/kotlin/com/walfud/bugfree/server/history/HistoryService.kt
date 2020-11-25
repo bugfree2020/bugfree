@@ -18,9 +18,9 @@ class HistoryService : BaseService() {
                     if (category != null && category != it.category) return@filter false
                     true
                 }
+                .skip(if (pageable.isPaged) pageable.pageNumber * pageable.pageSize.toLong() else 0)
+                .take(if (pageable.isPaged) pageable.pageSize.toLong() else Long.MAX_VALUE)
                 .sort { o1, o2 -> o1.createTime.compareTo(o2.createTime) }
-                .skipLast(pageable.let { if (it.isPaged) it.pageNumber * it.pageSize else null } ?: 0)
-                .take(pageable.let { if (it.isPaged) it.pageSize else null }?.toLong() ?: Long.MAX_VALUE)
     }
 
     @Transactional
