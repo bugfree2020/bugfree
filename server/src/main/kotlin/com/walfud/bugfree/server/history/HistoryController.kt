@@ -1,7 +1,6 @@
 package com.walfud.bugfree.server.history
 
 import com.walfud.bugfree.server.PAGE_SIZE
-import com.walfud.bugfree.server.jenkins.JenkinsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -17,7 +16,6 @@ import java.time.ZoneOffset
 @RequestMapping("/history")
 class HistoryController @Autowired constructor(
         val historyService: HistoryService,
-        val jenkinsService: JenkinsService,
 ) {
 
     @GetMapping(produces = ["application/json;charset=UTF-8"])
@@ -27,13 +25,7 @@ class HistoryController @Autowired constructor(
     }
 
     @PostMapping("/sync")
-    fun sync(): Flux<DbHistory> {
-        val syncTask = jenkinsService.loadHistory()
-                .flatMap { historyService.insertIfAbsent(it) }
-        val historyTask = historyService.findBy(null, null, null, Pageable.unpaged())
-
-        return syncTask.thenMany(historyTask)
-    }
+    fun sync(): Flux<DbHistory> = historyService.syncFromJenkins()
 }
 
 data class HistoryResponseItem(

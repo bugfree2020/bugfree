@@ -5,6 +5,7 @@ import org.springframework.boot.runApplication
 import org.springframework.data.web.ReactivePageableHandlerMethodArgumentResolver
 import org.springframework.data.web.ReactiveSortHandlerMethodArgumentResolver
 import org.springframework.http.HttpHeaders
+import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.config.WebFluxConfigurer
 import org.springframework.web.reactive.result.method.annotation.ArgumentResolverConfigurer
@@ -15,6 +16,7 @@ import reactor.core.publisher.Mono
 
 
 @SpringBootApplication
+@EnableScheduling
 class ServerApplication
 
 @Component
