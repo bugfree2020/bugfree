@@ -2,9 +2,14 @@ package com.walfud.bugfree.server.history
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
+import org.springframework.data.r2dbc.core.select
+import org.springframework.data.r2dbc.query.Criteria.where
 import org.springframework.data.r2dbc.repository.Modifying
 import org.springframework.data.r2dbc.repository.Query
+import org.springframework.data.relational.core.query.Criteria
+import org.springframework.data.relational.core.query.Query.query
 import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -28,6 +33,26 @@ class MyHistoryRepositoryImpl @Autowired constructor(
         private val template: R2dbcEntityTemplate
 ) : MyHistoryRepository {
     override fun findBy(ver: String?, buildType: String?, category: String?, pageable: Pageable): Flux<DbHistory> {
-        TODO("IMPL")
+        var condition = Criteria.empty()
+        if (ver != null) {
+            condition = condition.and(where("ver").`is`(ver))
+        }
+        if (buildType != null) {
+            condition = condition.and(where("build_type").`is`(buildType))
+        }
+        if (category != null) {
+            condition = condition.and(where("category").`is`(category))
+        }
+
+        var query = query(condition)
+        if (pageable.isPaged) {
+            query = query.offset(pageable.offset)
+                    .limit(pageable.pageSize)
+        }
+        query = query.sort(Sort.by(Sort.Direction.DESC, "timestamp"))
+
+        return template.select<DbHistory>()
+                .matching(query)
+                .all()
     }
 }
