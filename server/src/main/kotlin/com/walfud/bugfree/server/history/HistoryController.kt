@@ -37,7 +37,7 @@ class HistoryController @Autowired constructor(
     fun sync(from: Long = 0): Flux<DbHistory> = historyService.syncFromJenkins(LocalDateTime.ofEpochSecond(from, 0, ZoneOffset.UTC))
 
     @PostMapping("/syncRecent")
-    fun syncRecent(from: Long): Flux<DbHistory> = sync(System.currentTimeMillis() / 1000 - Duration.ofHours(1).toSeconds())
+    fun syncRecent(): Flux<DbHistory> = sync(System.currentTimeMillis() / 1000 - Duration.ofHours(1).toSeconds())
 }
 
 data class HistoryResponse(
