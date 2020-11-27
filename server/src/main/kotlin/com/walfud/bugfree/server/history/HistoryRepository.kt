@@ -49,7 +49,7 @@ class MyHistoryRepositoryImpl @Autowired constructor(
             query = query.offset(pageable.offset)
                     .limit(pageable.pageSize)
         }
-        query = query.sort(Sort.by(Sort.Direction.DESC, "timestamp"))
+        query = query.sort(Sort.by(Sort.Direction.DESC, "create_time"))
 
         return template.select<DbHistory>()
                 .matching(query)
