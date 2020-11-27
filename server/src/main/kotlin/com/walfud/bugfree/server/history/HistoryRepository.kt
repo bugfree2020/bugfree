@@ -16,6 +16,14 @@ import reactor.core.publisher.Mono
 import java.time.LocalDateTime
 
 interface HistoryRepository : ReactiveCrudRepository<DbHistory, String>, MyHistoryRepository {
+
+    @Query("""
+                SELECT ver
+                FROM `history`
+                WHERE result = :result
+        """)
+    fun findDistinctVerByResult(result: Int): Flux<String>
+
     @Modifying
     @Query("""
                 INSERT INTO `history`

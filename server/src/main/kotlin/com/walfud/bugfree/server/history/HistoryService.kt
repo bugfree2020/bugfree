@@ -22,6 +22,21 @@ class HistoryService : BaseService() {
     }
 
     @Transactional
+    fun findMainVer(): Flux<String> {
+        return historyRepository.findDistinctVerByResult(HISTORY_RESULT_OK)
+                .map { ver ->
+                    val matches = Regex("^(\\d+\\.\\d+\\.\\d+).*$").matchEntire(ver)
+                    return@map if (matches != null) {
+                        matches.groupValues[1]
+                    } else {
+                        ""
+                    }
+                }
+                .filter { it.isNotEmpty() }
+                .distinct()
+    }
+
+    @Transactional
     fun insertIfAbsent(dbHistory: DbHistory): Mono<Boolean> {
         return historyRepository.findAll()
                 .filter { it.jenkinsId == dbHistory.jenkinsId }

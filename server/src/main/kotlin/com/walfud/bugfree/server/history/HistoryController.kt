@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import java.time.ZoneOffset
 
 @RestController
@@ -19,9 +20,15 @@ class HistoryController @Autowired constructor(
 ) {
 
     @GetMapping(produces = ["application/json;charset=UTF-8"])
-    fun history(ver: String?, buildType: String?, category: String?, @PageableDefault(size = PAGE_SIZE, sort = ["timestamp"], direction = Sort.Direction.DESC) pageable: Pageable): Flux<HistoryResponseItem>? {
+    fun history(ver: String?, buildType: String?, category: String?, @PageableDefault(size = PAGE_SIZE, sort = ["timestamp"], direction = Sort.Direction.DESC) pageable: Pageable): Flux<HistoryResponseItem> {
         return historyService.findBy(ver, buildType, category, pageable)
                 .map(HistoryResponseItem::fromDbHistory)
+    }
+
+    @GetMapping(path = ["/version"], produces = ["application/json;charset=UTF-8"])
+    fun mainVersion(): Mono<List<String>> {
+        return historyService.findMainVer()
+                .collectList()
     }
 
     @PostMapping("/sync")
