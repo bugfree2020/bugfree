@@ -18,7 +18,7 @@ web 目录是 flutter 实现的前端. server 是 SpringBoot 实现的后端. �
 记得要将改动同步到 server:
 ```shell
 # 假设当前目录是 web
-rm -rf ../server/src/main/resources/static/*
+rm -rf ../server/src/main/resources/static
 mkdir -p ../server/src/main/resources/static 
 cp -r ./build/web/* ../server/src/main/resources/static
 ```

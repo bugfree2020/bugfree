@@ -14,7 +14,7 @@ class NetworkUtil {
     try {
       var response =
           await http.get(Uri.encodeFull(SERVER_CI_HISTORY), headers: {
-        "Accept": "application/json",
+        // "Accept": "application/json",
       });
       var result = json.decode(response.body);
       onLoadHistorySuccess(ciHistoryListener, result);
