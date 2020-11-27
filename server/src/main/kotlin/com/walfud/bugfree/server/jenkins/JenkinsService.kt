@@ -1,8 +1,10 @@
 package com.walfud.bugfree.server.jenkins
 
 import com.cdancy.jenkins.rest.JenkinsClient
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.walfud.bugfree.server.BaseService
 import com.walfud.bugfree.server.history.*
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
@@ -19,27 +21,47 @@ const val PARAM_CONTENT = "DESC"
 
 @Service
 class JenkinsService @Autowired constructor(
-        private val jenkinsClient: JenkinsClient
+        private val jenkinsClient: JenkinsClient,
+        private val objectMapper: ObjectMapper,
 ) : BaseService() {
-    fun loadHistory(): Flux<DbHistory> {
+    companion object {
+        private val logger = LoggerFactory.getLogger(JenkinsService::class.java)
+    }
+
+    fun loadHistory(from: LocalDateTime): Flux<DbHistory> {
         return Flux.just(true)
                 .publishOn(Schedulers.parallel())
                 .flatMap {
                     val buildInfos = jenkinsClient.api().jobsApi().jobInfo(null, JOB_NAME).builds()
-                    Flux.fromIterable(buildInfos)
+                    val sortedBuildInfos = buildInfos.sortedByDescending { it.number() }
+                    Flux.fromIterable(sortedBuildInfos)
                 }
                 .map { buildInfo ->
                     jenkinsClient.api().jobsApi().buildInfo(null, JOB_NAME, buildInfo.number())
                 }
+                .takeWhile { it.timestamp() >= from.toEpochSecond(ZoneOffset.UTC) * 1000 }
+                .doOnNext { logger.debug(it.toString()) }
                 .map { buildInfo ->
                     val params = buildInfo.actions().singleOrNull { it.parameters().isNotEmpty() }?.parameters()
                     val branch = params?.singleOrNull { it.name() == PARAM_BRANCH }?.value() ?: ""
-                    val ver = ""
+                    val ver = buildInfo.artifacts().firstOrNull { it.fileName().contains(".apk") }?.fileName()?.substringBefore(".apk")
+                            ?: ""
                     val buildType = params?.singleOrNull { it.name() == PARAM_BUILD_TYPE }?.value() ?: ""
                     val category = params?.singleOrNull { it.name() == PARAM_CATEGORY }?.value() ?: ""
                     val content = params?.singleOrNull { it.name() == PARAM_CONTENT }?.value() ?: ""
-                    val innerUrl = ""
-                    val outerUrl = ""
+                    val apkRelPath = buildInfo.artifacts().firstOrNull { it.fileName().contains(".apk") }?.relativePath()
+                    val innerUrl = if (buildInfo.result() == "SUCCESS") {
+                        val buildNum = buildInfo.number()
+                        "http://bugfree.ixiaochuan.cn/job/zuiyou_oversea/$buildNum/artifact/$apkRelPath"
+                    } else {
+                        ""
+                    }
+                    val outerUrl = if (buildInfo.result() == "SUCCESS") {
+                        val apkFilename = buildInfo.artifacts().firstOrNull { it.fileName().contains(".apk") }?.fileName()
+                        "https://apk.izuiyou.com/cocofun/android/$apkFilename"
+                    } else {
+                        ""
+                    }
                     val result = when (buildInfo.result()) {
                         "SUCCESS" -> HISTORY_RESULT_OK
                         "FAILURE" -> HISTORY_RESULT_FAIL
@@ -68,6 +90,7 @@ class JenkinsService @Autowired constructor(
                             LocalDateTime.now(),
                     )
                 }
+                .doOnNext { logger.debug(objectMapper.writeValueAsString(it)) }
     }
 }
 

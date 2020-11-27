@@ -3,9 +3,17 @@ server:
 
 spring:
   r2dbc:
-    url: r2dbcs:mysql://bugfree.ixiaochuan.cn:23306/bugfree?sslMode=DISABLED
+    url: r2dbcs:pool:mysql://bugfree.ixiaochuan.cn:23306/bugfree
     username: bugfree
     password: bugfree
     pool:
       initialSize: 2
       maxSize: 10
+
+logging:
+  level:
+    root: INFO
+    com:
+      walfud:
+        bugfree:
+          server: DEBUG
