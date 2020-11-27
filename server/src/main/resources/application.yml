@@ -16,5 +16,4 @@ logging:
     com:
       walfud:
         bugfree:
-          server:
-            jenkins: DEBUG
+          server: DEBUG
