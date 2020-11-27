@@ -21,9 +21,9 @@ class CIPkgInfoList {
       String title = dataItem['title'];
       String branch = dataItem['branch'];
       String ver = dataItem['ver'];
-      String category = utf8convert(dataItem['category']);
+      String category = dataItem['category'];
       String buildType = dataItem['buildType'];
-      String desc = utf8convert(dataItem['desc']);
+      String desc = dataItem['desc'];
       String urlInner = dataItem['url_inner'];
       String urlOuter = dataItem['url_outer'];
       int result = dataItem['result'];
@@ -76,7 +76,7 @@ class DataPkgInfo {
     this.ver = jsonRes['ver'];
     this.category = jsonRes['category'];
     this.buildType = jsonRes['buildType'];
-    this.desc = jsonRes['desc'];
+    this.desc = jsonRes['desc'] + "\n\n\n";
     this.urlInner = jsonRes['urlInner'];
     this.buildType = jsonRes['buildType'];
     this.result = jsonRes['result'];

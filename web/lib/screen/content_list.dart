@@ -123,9 +123,8 @@ class ContentListScreen extends State<BodyContentWidget>
               decoration: buildCardContainer(),
               child: Text(
                 _data[index].desc,
-                softWrap: true,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   color: Colors.black87,
                 ),
               ),
