@@ -9,6 +9,11 @@ const val HISTORY_RESULT_OK = 0
 const val HISTORY_RESULT_FAIL = 1
 const val HISTORY_RESULT_CANCEL = 5
 
+/**
+ * Just begin building, has not completed
+ */
+const val HISTORY_RESULT_INCOMPLETE = 10
+
 @Table("history")
 data class DbHistory(
         @Id

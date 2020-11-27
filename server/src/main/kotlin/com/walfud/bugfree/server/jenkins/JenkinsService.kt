@@ -28,16 +28,18 @@ class JenkinsService @Autowired constructor(
         private val logger = LoggerFactory.getLogger(JenkinsService::class.java)
     }
 
-    fun loadHistory(): Flux<DbHistory> {
+    fun loadHistory(from: LocalDateTime): Flux<DbHistory> {
         return Flux.just(true)
                 .publishOn(Schedulers.parallel())
                 .flatMap {
                     val buildInfos = jenkinsClient.api().jobsApi().jobInfo(null, JOB_NAME).builds()
-                    Flux.fromIterable(buildInfos)
+                    val sortedBuildInfos = buildInfos.sortedByDescending { it.number() }
+                    Flux.fromIterable(sortedBuildInfos)
                 }
                 .map { buildInfo ->
                     jenkinsClient.api().jobsApi().buildInfo(null, JOB_NAME, buildInfo.number())
                 }
+                .takeWhile { it.timestamp() >= from.toEpochSecond(ZoneOffset.UTC) * 1000 }
                 .doOnNext { logger.debug(it.toString()) }
                 .map { buildInfo ->
                     val params = buildInfo.actions().singleOrNull { it.parameters().isNotEmpty() }?.parameters()

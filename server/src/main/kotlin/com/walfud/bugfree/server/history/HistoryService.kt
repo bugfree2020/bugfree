@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.LocalDateTime
 
 @Service
 class HistoryService : BaseService() {
@@ -67,10 +68,10 @@ class HistoryService : BaseService() {
                 }
     }
 
-    fun syncFromJenkins(): Flux<DbHistory> {
+    fun syncFromJenkins(from: LocalDateTime): Flux<DbHistory> {
         logger.debug("<<< syncFromJenkins. ")
 
-        val syncTask = jenkinsService.loadHistory()
+        val syncTask = jenkinsService.loadHistory(from)
                 .flatMap { historyService.insertIfAbsent(it) }
         val historyTask = historyService.findBy(null, null, null, Pageable.unpaged())
 

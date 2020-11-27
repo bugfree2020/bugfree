@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.Duration
+import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 @RestController
@@ -20,9 +22,9 @@ class HistoryController @Autowired constructor(
 ) {
 
     @GetMapping(produces = ["application/json;charset=UTF-8"])
-    fun history(ver: String?, buildType: String?, category: String?, @PageableDefault(size = PAGE_SIZE, sort = ["timestamp"], direction = Sort.Direction.DESC) pageable: Pageable): Flux<HistoryResponseItem> {
+    fun history(ver: String?, buildType: String?, category: String?, @PageableDefault(size = PAGE_SIZE, sort = ["timestamp"], direction = Sort.Direction.DESC) pageable: Pageable): Flux<HistoryResponse> {
         return historyService.findBy(ver, buildType, category, pageable)
-                .map(HistoryResponseItem::fromDbHistory)
+                .map(HistoryResponse::fromDbHistory)
     }
 
     @GetMapping(path = ["/version"], produces = ["application/json;charset=UTF-8"])
@@ -32,10 +34,13 @@ class HistoryController @Autowired constructor(
     }
 
     @PostMapping("/sync")
-    fun sync(): Flux<DbHistory> = historyService.syncFromJenkins()
+    fun sync(from: Long = 0): Flux<DbHistory> = historyService.syncFromJenkins(LocalDateTime.ofEpochSecond(from, 0, ZoneOffset.UTC))
+
+    @PostMapping("/syncRecent")
+    fun syncRecent(from: Long): Flux<DbHistory> = sync(System.currentTimeMillis() / 1000 - Duration.ofHours(1).toSeconds())
 }
 
-data class HistoryResponseItem(
+data class HistoryResponse(
         val branch: String,
         val ver: String,
         val buildType: String,
@@ -48,7 +53,7 @@ data class HistoryResponseItem(
         val timestamp: Long,
 ) {
     companion object {
-        fun fromDbHistory(dbHistory: DbHistory): HistoryResponseItem = HistoryResponseItem(
+        fun fromDbHistory(dbHistory: DbHistory): HistoryResponse = HistoryResponse(
                 dbHistory.branch,
                 dbHistory.ver,
                 dbHistory.buildType,

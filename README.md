@@ -17,7 +17,12 @@ web 目录是 flutter 实现的前端. server 是 SpringBoot 实现的后端. �
 
 # server
 ```shell
+# List all history
 curl 'localhost:8080/history?ver=1.0.0.100&buildType=debug&category=preview&page=0'
+
+# Synchronize from jenkins
+# `from` is unix-timestamp, optional
+curl -X POST -H 'Content-Type: application/x-www-form-urlencoded' 'localhost:8080/history/sync?from=1606460110'
 ```
 
 ### TODO
